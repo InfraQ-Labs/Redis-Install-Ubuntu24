@@ -56,48 +56,124 @@ sudo mkdir /etc/redis
 sudo cp /usr/src/redis-8.0.0/redis.conf /etc/redis
 sudo nano /etc/redis/redis.conf
   ```
-In the configuration file, modify the following settings.
 
-###Set bind address:
-For local-only access (recommended):
-  ```
-bind 127.0.0.1
-  ```
-For public access (use with firewall/ACLs):
-  ```
-bind 0.0.0.0
- ```
- Tip: Keep this default unless you have a controlled environment and understand the security implications.
+🔧 Required Configuration Changes
 
-### Enable systemd supervision
-  ```
-supervised systemd
-  ```
-### Enable append-only file for persistence:
-  ```
-appendonly yes
-  ```
-⚠️ Warning: Enabling appendonly yes on an existing Redis database can lead to data loss if done by editing the config file and restarting the server.
-To safely convert an existing database to AOF, use the CONFIG command on a live server first. More details: https://redis.io/docs/latest/operate/oss_and_stack/management/persistence/
+Below are the important changes you must make in the configuration file.
+1. Enable systemd supervision
 
-### Add snapshot save rules:
+By default, this setting is commented or set to no.
+
+Location: ~Line 328
+
+* Default:
+  ```
+  # supervised no
+  ```
+* Change to:
+  ```
+  supervised systemd
+  ```
+Reason:
+Allows Redis to integrate properly with systemd, ensuring reliable service management (start/stop/restart). Without this, Redis may fail under systemd.
+
+2. Enable Append-Only File (AOF) persistence
+
+Location: ~Line 1405
+* Default:
+  ```
+  appendonly no
+  ```
+* Change to:
+  ```
+  appendonly yes
+  ```
+Reason:
+* Enables durable persistence. Data is written to disk on every write operation, reducing risk of data loss compared to snapshot-only (RDB).
+
+  ** ⚠️ Important Warning:
+  * Enabling appendonly yes on an existing database via config change + service restart can lead to data loss.
+  * This setting should ideally be configured during the initial database setup.
+
+* For existing databases, enable it safely using:
+  ```
+  redis-cli CONFIG SET appendonly yes
+  ```
+  * More info: https://redis.io/docs/latest/operate/oss_and_stack/management/persistence/
+
+3. Configure working directory
+Location: ~Line 516
+* Default:
+  ```
+  dir ./
+  ```
+* Change to:
+  ```
+  dir /var/lib/redis
+  ```
+Reason:
+* Ensures Redis stores persistent data in a proper system directory instead of a relative path, which can break under systemd.
+
+4. Configure bind address
+Location: ~Line 88
+
+Default:
+  ```
+  bind 127.0.0.1 ::1
+  ```
+Recommended (secure, local-only):
+  ```
+  bind 127.0.0.1
+  ```
+Optional (public access):
+  ```
+  bind 0.0.0.0
+  ```
+Reason:
+* 127.0.0.1 → restricts access to localhost (safe default)
+* 0.0.0.0 → allows external access (must secure with firewall/auth)
+* ⚠️ Exposing Redis publicly without security controls is dangerous.
+
+5. Add snapshot (RDB) save rules
+
+Add these lines if not already present:
   ```
 save 900 1
 save 300 10
 save 60 10000
   ```
-### To customize the defalt port:
-  ```
-port 6379
-  ```
+Reason:
+* Defines when Redis should create snapshots (RDB backups) based on write activity.
 
-### Configure Redis working directory
+6. Verify port configuration
 
-Redis uses this directory to store persistent data.
+Default:
   ```
-dir /var/lib/redis
+  port 6379
   ```
-Save and close the file.
+Reason:
+* Default Redis port. Change only if required.
+
+7. Configure Redis Password (Authentication)
+
+Location: ~Line 1068
+* Default:
+  ```
+  # requirepass foobared
+  ```
+* Change to:
+  ```
+  requirepass YourStrongPasswordHere
+  ```
+Reason:
+* Adds authentication to Redis, preventing unauthorized access — especially critical if Redis is exposed outside localhost.
+
+  ** ⚠️ Security Note:
+  * Always set a strong password if Redis is accessible externally
+  * Combine with firewall rules (ufw) for better protection
+  * Never expose Redis publicly without authentication
+    
+✔️ Save and exit the file
 
 ---
 
