@@ -35,19 +35,18 @@ sudo wget https://github.com/redis/redis/archive/refs/tags/8.0.0.tar.gz
 sudo tar -xzf 8.0.0.tar.gz
 cd redis-8.0.0
   ```
----
 
   ```
 make -j $(nproc)
 sudo make install
   ```
----
+
 Verify installation:
   ```
 redis-server --version
 redis-cli --version
   ```
-
+---
 ## 3. Configure Redis
 
 Create the Redis configuration directory and copy the default configuration file:
@@ -117,15 +116,15 @@ Reason:
 4. Configure bind address
 Location: ~Line 88
 
-Default:
+* Default:
   ```
   bind 127.0.0.1 ::1
   ```
-Recommended (secure, local-only):
+* Recommended (secure, local-only):
   ```
   bind 127.0.0.1
   ```
-Optional (public access):
+* Optional (public access):
   ```
   bind 0.0.0.0
   ```
@@ -238,7 +237,7 @@ Test Redis connectivity.
 redis-cli ping
 # Expected output: PONG
   ```
-
+---
 ✅ Notes
 
 * Redis binaries: /usr/local/bin/redis-server
