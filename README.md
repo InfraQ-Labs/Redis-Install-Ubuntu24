@@ -1,5 +1,15 @@
 # Install Redis 8 on Ubuntu 24.04 (Complete Step-by-Step Guide)
 
+[![Redis Docs](https://img.shields.io/badge/docs-redis-red)](https://redis.io/docs/)
+[![Ubuntu](https://img.shields.io/badge/OS-Ubuntu%2024.04-orange)]()
+[![Redis](https://img.shields.io/badge/Redis-8.0-red)](https://redis.io/)
+[![Setup](https://img.shields.io/badge/setup-automated-success)]()
+[![Systemd](https://img.shields.io/badge/service-systemd-blue)]()
+[![Persistence](https://img.shields.io/badge/persistence-AOF%20enabled-brightgreen)]()
+[![Security](https://img.shields.io/badge/security-production--ready-important)]()
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![Maintained](https://img.shields.io/badge/status-maintained-brightgreen)]()
+
 A production-ready guide to install **Redis 8 on Ubuntu 24.04** using both automated script and manual setup. Includes systemd configuration, persistence setup, and security best practices.
 
 ---
