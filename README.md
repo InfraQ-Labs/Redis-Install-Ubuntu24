@@ -130,6 +130,13 @@ Unlike generic tutorials, this repository provides:
 
 ---
 
+## 🧪 Tested Environment
+
+- Ubuntu 24.04 LTS
+- AWS EC2 (t2.medium)
+- Redis 8.0.0
+- systemd service configured
+
 ## 📈 SEO Tip (For Contributors)
 
 If you found this useful, consider sharing:
